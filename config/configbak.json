@@ -1,0 +1,7 @@
+{
+  "Other": {
+    "MysqlDSN": "root:test123@tcp(192.168.0.62:3306)/app?charset=utf8&parseTime=True&loc=Local"
+  },
+  "IsDevelopment": "true",
+  "Gzip": "true"
+}
