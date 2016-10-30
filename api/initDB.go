@@ -1,13 +1,23 @@
 package api
 
 import (
-    "../models"
     "github.com/kataras/iris"
+    "iris/modules"
+	"iris/models"
 )
 
 func init() {
-    iris.Get("/initDB", func(c *iris.Context) {
-        models.Initdb(models.DB)
-        c.Write("InitDB Ok")
+    iris.Post("/initDB", func(ctx *iris.Context) {
+		//判断是否是admin用户，否则返回403
+        if ctx.Session().GetString("isAdmin") == "true" {
+			modules.Initdb(modules.DB)
+			ctx.JSON(iris.StatusOK,models.JSONResponse{
+				Message:"InitDB Complete",
+			})
+		} else {
+			ctx.JSON(iris.StatusForbidden, models.JSONResponse{
+				Message: "Your credential is not Allowed to do this! :-)",
+			})
+		}
     })
 }

@@ -2,13 +2,14 @@ package main
 
 import (
     "github.com/kataras/iris"
-    "./models"
-    _ "./api"
-    _"./config"
+    _ "iris/config"
+    _ "iris/modules/middleware"
+    _ "iris/api"
+    "iris/modules"
 )
 
 func main() {
-    defer models.DB.Close()
+    defer modules.DB.Close()
     iris.Listen("localhost:8080")
 }
 
