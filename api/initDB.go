@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-    iris.Post("/initDB", func(ctx *iris.Context) {
+    iris.Post("/db/init", func(ctx *iris.Context) {
 		//判断是否是admin用户，否则返回403
         if ctx.Session().GetString("isAdmin") == "true" {
 			modules.Initdb(modules.DB)

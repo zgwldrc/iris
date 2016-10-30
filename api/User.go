@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	iris.Put("/User", func(ctx *iris.Context) {
+	iris.Put("/user", func(ctx *iris.Context) {
 		fmt.Println(
 			"[Put /User]: \n",
 			"操作用户:", ctx.Session().GetString("name"), "\n",
@@ -20,28 +20,28 @@ func init() {
 				Message:fmt.Sprint(err),
 			})
 		}
+		//对输入用户模型数据进行有效性检测
 		checkResult := modules.NewUserChecker(&inputUser).CheckUserValidity()
 
 		if checkResult.InputValid {
 			//用户输入完整
 			if checkResult.Exist {
-				//用户存在
+				//输入用户名已存在，不可用
 				ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-					Message:"It seems like you input a existing user name  :-)",
+					Message:"用户已存在",
 				})
 			} else {
-				//用户不存在
-				//仅当用户不存在且输入有效的情况下建立用户
-				var tempUser models.User
+				//输入用户名可用
+
 
 				//首先hash用户明文密码再存储
 				inputUser.Password = modules.HashPassword(inputUser.Password)
 				modules.DB.Create(&inputUser)
-				//建立完毕后再查询数据库，检测是否创建成功
-				modules.DB.Where("name = ?", inputUser.Name).First(&tempUser)
-				if tempUser.Name != "" {
+				//建立完毕后orm会再次查询数据库，将record数据加载到模型
+
+				if inputUser.ID != 0 {
 					ctx.JSON(iris.StatusCreated, models.JSONResponse{
-						Message:"Create User OK",
+						Message:"创建用户(" +inputUser.Name + ") 成功",
 					})
 				} else {
 					ctx.JSON(iris.StatusInternalServerError, models.JSONResponse{
@@ -52,13 +52,13 @@ func init() {
 		} else {
 			//用户输入不完整
 			ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-				Message:"It seems like you input a null string :-)",
+				Message:"输入完整性不合法",
 			})
 		}
 	})
 
 	//删除用户操作
-	iris.Delete("/User", func(ctx *iris.Context) {
+	iris.Delete("/user", func(ctx *iris.Context) {
 		var inputUser = models.User{}
 		var tempUser = models.User{}
 		if err:= ctx.ReadJSON(&inputUser) ;err != nil {
@@ -68,7 +68,7 @@ func init() {
 			})
 		}
 
-		//当前回话用户是admin时才能执行该操作
+		//判断当前会话是否为admin
 		if ctx.Session().GetString("isAdmin") == "true" {
 			//检查输入用户信息
 			checkResult := modules.NewUserChecker(&inputUser).CheckUserValidity()
@@ -102,4 +102,5 @@ func init() {
 			})
 		}
 	})
-}
+
+} //end of func init()

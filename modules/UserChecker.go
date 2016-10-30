@@ -30,35 +30,37 @@ func NewUserChecker (inputUser *models.User) (*UserChecker) {
 //在返回结果中包含：账户是否存在，密码是否正确，是否为admin
 func (this *UserChecker) CheckUserValidity() (*CheckUserResult) {
 
-	//若用户输入的账户名称存在空字符串则直接返回预定结果，不再继续判断
+	//过滤掉空用户名情况
 	if this.InputUser.Name == "" {
 		return this.result
 	}
 
-	//输入用户名不为空时，继续检测密码字段是否为空，来设置InputValid属性
+	//检测密码字段是否为空
 	if this.InputUser.Password != "" {
+		//用户输入合法则进入这里
+		//设置相应的flag
 		this.result.InputValid = true
-	}
+		//根据用户名查询数据库
+		DB.Where("name = ?", this.InputUser.Name).First(this.tempUser)
+		//根据数据库返回判断用户是否存在
+		if  this.tempUser.Name != "" {
+			//用户存在时进入这里
+			this.result.Exist = true
 
-	//输入用户名不为空时，检查数据库中用户存在性
-	DB.Where("name = ?", this.InputUser.Name).First(this.tempUser)
-	//用户存在时
-	if  this.tempUser.Name != "" {
-		//用户存在时进入这里
-		this.result.Exist = true
+			//检查输入用户是否为admin
+			if this.tempUser.ID == 1 {
+				this.result.IsAdmin =  true
+			}
 
-		//检查输入用户是否为admin
-		if this.tempUser.ID == 1 {
-			this.result.IsAdmin =  true
-		}
-
-		//检查密码字段是否包含值（检查InputValid属性）,不为空时进一步检查密码有效性
-		if this.result.InputValid {
+			//检查密码有效性
 			if CompareHashAndPassword(this.tempUser.Password, this.InputUser.Password) {
-			    this.result.PasswordValid = true
-		    }
+				this.result.PasswordValid = true
+			}
 		}
+		//用户不存在则跳到这里
+		return this.result
 	}
+	//输入密码为空则跳到这里
 	return this.result
 }
 
