@@ -1,11 +1,12 @@
 package modules
 
 import (
-    _"github.com/go-sql-driver/mysql"
+	"fmt"
+
+	_"github.com/jinzhu/gorm/dialects/mysql"
     "github.com/jinzhu/gorm"
-    _"github.com/jinzhu/gorm/dialects/mysql"
-    "github.com/kataras/iris"
-    "fmt"
+    "gopkg.in/kataras/iris.v4"
+
 	"iris/models"
 )
 
@@ -20,9 +21,7 @@ func init(){
     }
 }
 
-
 func Initdb(DB *gorm.DB) {
-    
     DB.DropTableIfExists(
 		& models.Account{},
 	).DropTableIfExists(

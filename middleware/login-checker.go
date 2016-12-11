@@ -1,17 +1,14 @@
 package middleware
 
 import (
-	"github.com/kataras/iris"
 	"fmt"
+
+	"gopkg.in/kataras/iris.v4"
 	"iris/models"
 )
 
-type LoginedChecker struct {
-
-}
-
-func (lc LoginedChecker) Serve(ctx *iris.Context) {
-	message := "[全局登录状态检测过滤器]:\n"
+func LoginStatusCheck(ctx *iris.Context) {
+	message := "[全局登录状态检测中间件]:\n"
 	message += "请求URI: " + ctx.PathString() + "\n"
 	message += "请求携带Cookie: " + ctx.GetCookie("irissessionid") + "\n"
 
@@ -32,8 +29,4 @@ func (lc LoginedChecker) Serve(ctx *iris.Context) {
 	}
 
 	fmt.Println(message)
-}
-
-func init(){
-	iris.Use(&LoginedChecker{})
 }

@@ -1,9 +1,9 @@
 package main
 
 import (
-    "github.com/kataras/iris"
+    "gopkg.in/kataras/iris.v4"
     _ "iris/config"
-    _ "iris/modules/middleware"
+    _ "iris/middleware"
     _ "iris/api"
     "iris/modules"
 )
