@@ -20,31 +20,31 @@ func login(ctx *iris.Context) {
 
     if err := ctx.ReadJSON(&inputUser); err != nil {
         ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-            ErrorCode: error.ERR_LOGIN_INPUT_INVALID,
+            ErrorCode: error.ERR_USER_BROKEN_INPUT,
             Message: "Input can not be recognised",
         })
         return
     }
 
     if iris.Config.IsDevelopment {
-        fmt.Println("[login] user input :", inputUser)
+        fmt.Println("[login] user input :", inputUser.Name, inputUser.Password)
     }
 
     //返回一个CheckResult结构体存储检查结果
     checkResult := inputUser.CheckUserValidity()
 
     //用户不存在
-    if !checkResult.Exist {
+    if checkResult.NotExist {
         ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-            ErrorCode: error.ERR_LOGIN_USER_NOT_EXISTS,
+            ErrorCode: error.ERR_USER_NOT_EXISTS,
             Message: "User not exists",
         })
         return
     }
     //密码无效
-    if !checkResult.PasswordValid {
+    if checkResult.PasswordInvalid {
         ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-            ErrorCode: error.ERR_LOGIN_PASSWD_INVALID,
+            ErrorCode: error.ERR_USER_PASSWD_INVALID,
             Message:"Password Invalid",
         })
         return
@@ -52,11 +52,13 @@ func login(ctx *iris.Context) {
 
     sess := ctx.Session()
     sess.Set("logined", 1)
-    sess.Set("name", inputUser.Name)
-    sess.Set("id", checkResult.Id)
+    sess.Set("user", inputUser.Name)
+    sess.Set("id", checkResult.ID)
 
     if iris.Config.IsDevelopment {
-        fmt.Println("Session for:",sess.GetString("name"),sess.GetString("id"))
+        name := sess.GetString("user")
+        id,_:=sess.GetInt("id")
+        fmt.Println("Session for:",name,id)
     }
     //响应登录成功
     ctx.JSON(iris.StatusOK, models.JSONResponse{

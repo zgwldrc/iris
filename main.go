@@ -5,11 +5,11 @@ import (
     _ "iris/config"
     _ "iris/middleware"
     _ "iris/api"
-    "iris/modules"
+    "iris/services/mysql"
 )
 
 func main() {
-    defer modules.DB.Close()
+    defer mysql.DB.Close()
     iris.Listen("localhost:8080")
 }
 

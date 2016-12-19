@@ -2,7 +2,7 @@ package models
 
 
 type JSONResponse struct {
-	ErrorCode int			`json:"error_code"`
-	Message string			`json:"message"`
-	Data    interface{}     `json:"data"`
+	ErrorCode int			`json:"error_code,omitempty"`
+	Message string			`json:"message,omitempty"`
+	Data    interface{}     `json:"data,omitempty"`
 }

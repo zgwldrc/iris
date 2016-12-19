@@ -38,7 +38,7 @@ func init() {
         env = "DEV"
     }
     configMap[env].Set(iris.Config)
-    fmt.Println(`########当前使用配置${env}#########`)
+    fmt.Printf("########当前使用配置%s#########\n",env)
     fmt.Println("iris.Config.Gzip:",iris.Config.Gzip)
     fmt.Println("iris.Config.IsDevelopment:",iris.Config.IsDevelopment)
     fmt.Println(`iris.Config.Other["MySQLDSN"]:`,iris.Config.Other["MySQLDSN"])

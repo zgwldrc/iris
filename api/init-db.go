@@ -3,22 +3,16 @@ package api
 
 import (
     "gopkg.in/kataras/iris.v4"
-    "iris/modules"
+    "iris/services/mysql"
 	"iris/models"
+	"iris/init-db"
 )
 
 func init() {
-    iris.Post("/db/init", func(ctx *iris.Context) {
-		//判断是否是admin用户，否则返回403
-        if ctx.Session().GetString("isAdmin") == "true" {
-			modules.Initdb(modules.DB)
-			ctx.JSON(iris.StatusOK,models.JSONResponse{
-				Message:"InitDB Complete",
-			})
-		} else {
-			ctx.JSON(iris.StatusForbidden, models.JSONResponse{
-				Message: "Your credential is not Allowed to do this! :-)",
-			})
-		}
-    })
+	iris.Post("/db/init", func(ctx *iris.Context) {
+		init_db.Init(mysql.DB)
+		ctx.JSON(iris.StatusOK, models.JSONResponse{
+			Message:"InitDB Complete",
+		})
+	})
 }

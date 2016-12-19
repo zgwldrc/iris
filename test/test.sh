@@ -1,12 +1,17 @@
 #!/bin/bash
-#admin登录
-curl localhost:8080/login -d'{"Name":"admin","Password":"admin"}' -i -c cookie	
-curl localhost:8080/login -d'{"Name":"xiayu","Password":"123"}' -i -c cookie
-#登出
-curl -XDELETE localhost:8080/login -i -b cookie
+#initDB
+curl -XPOST localhost:8080/db/init
+#登录
+curl localhost:8080/login -d'{"name":"admin","password":"admin"}' -i -c /tmp/cookie
+
 #新增用户
-curl -i -XPUT localhost:8080/user -d'{"Name":"xiayu","Password":"123"}' -b cookie
-curl -i -XPUT localhost:8080/User -d'{"Name":"xiayu2","Password":"123"}' -b cookie
-curl -i -XPUT localhost:8080/User -d'{"Name":"xiayu3","Password":"123"}' -b cookie
+curl -i -XPOST localhost:8080/user -d'{"Name":"xiayu","Password":"123"}' -b /tmp/cookie
 #删除用户
-curl -i -XDELETE localhost:8080/User -d'{"Name":"xiayu"}' -b cookie
+curl -i -XDELETE localhost:8080/user/2 -d'{"Name":"xiayu"}' -b /tmp/cookie
+
+#获得帐户类型列表
+curl -i localhost:8080/account-type -b /tmp/cookie
+
+
+#登出
+curl -XDELETE localhost:8080/login -i -b /tmp/cookie
