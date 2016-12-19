@@ -3,7 +3,7 @@ package init_db
 import (
 	"iris/models"
 	"iris/services/bcrypt"
-	"github.com/jinzhu/gorm"
+    "github.com/jinzhu/gorm"
 )
 
 func Init(DB *gorm.DB) {
@@ -55,3 +55,4 @@ func Init(DB *gorm.DB) {
 
     DB.Create(&admin)
 }
+
