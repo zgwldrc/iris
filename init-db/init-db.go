@@ -27,9 +27,9 @@ func Init(DB *gorm.DB) {
     // 2nd param : destination table(id)
     // 3rd param : ONDELETE
     // 4th param : ONUPDATE
-    //DB.Model(&models.Account{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
-    //DB.Model(&models.Account{}).AddForeignKey("endpoint_id", "endpoints(id)", "SET NULL", "CASCADE")
-    //DB.Model(&models.Account{}).AddForeignKey("account_type_id", "account_types(id)", "SET NULL", "CASCADE")
+    DB.Model(&models.Account{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+    DB.Model(&models.Account{}).AddForeignKey("endpoint_id", "endpoints(id)", "SET NULL", "CASCADE")
+    DB.Model(&models.Account{}).AddForeignKey("account_type_id", "account_types(id)", "SET NULL", "CASCADE")
 
     //DB.Model(models.User{}).Related(models.Account{})
     //DB.Model(models.Account{}).Related(models.Endpoint{})

@@ -11,8 +11,8 @@ import (
 )
 
 func init() {
-    var initdb = flag.Bool("initdb", false, "whether init db")
-    if flag.Parse(); *initdb {
+    var initDB = flag.Bool("initdb", false, "whether init db")
+    if flag.Parse(); *initDB {
         init_db.Init(mysql.DB)
     }
 }

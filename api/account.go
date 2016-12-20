@@ -9,6 +9,7 @@ import (
 )
 
 func init() {
+	//新增帐户
 	iris.Post("/account", createAccount)
 }
 
