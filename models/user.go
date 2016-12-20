@@ -7,17 +7,17 @@ import (
 
 type User struct {
     Model
-    Name string              `gorm:"not null;unique_index"  json:"name,omitempty"`
-    Password string          `gorm:"not null"               json:"password,omitempty"`
+    Name string              `json:"name,omitempty"     gorm:"not null;unique_index"`
+    Password string          `json:"password,omitempty" gorm:"not null"`
     Account []Account        `json:"account,omitempty"`//has-many
 }
 
 //定义一个结构体，专门用于承载CheckUserValidity检查结果信息
 type CheckUserResult struct {
-	NotExist        bool           `json:"not_exist,omitempty"`
+	NotExist        bool    `json:"not_exist,omitempty"`
 	PasswordInvalid bool    `json:"password_invalid,omitempty"`
-	InputIsBroken   bool      `json:"input_is_broken,omitempty"`
-	ID              int                 `json:"id,omitempty"`
+	InputIsBroken   bool    `json:"input_is_broken,omitempty"`
+	ID              int     `json:"id,omitempty"`
 }
 
 //检查用户合法性，用于登录时，建立用户时，对用户输入的检测

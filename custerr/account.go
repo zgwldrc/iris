@@ -1,4 +1,4 @@
-package error
+package custerr
 
 const (
 	ERR_ACCOUNT_BROKEN_INPUT = 4011

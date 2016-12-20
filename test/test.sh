@@ -1,6 +1,5 @@
 #!/bin/bash
-#initDB
-curl -XPOST localhost:8080/db/init
+
 #登录
 curl localhost:8080/login -d'{"name":"admin","password":"admin"}' -i -c /tmp/cookie
 
@@ -11,7 +10,8 @@ curl -i -XDELETE localhost:8080/user/2 -d'{"Name":"xiayu"}' -b /tmp/cookie
 
 #获得帐户类型列表
 curl -i localhost:8080/account-type -b /tmp/cookie
-
+#新增一个账户信息
+curl -i XPOST localhost:8080/account -d'{}'
 
 #登出
 curl -XDELETE localhost:8080/login -i -b /tmp/cookie

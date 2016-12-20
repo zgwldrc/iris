@@ -14,7 +14,7 @@ func init() {
     //从配置文件加载配置数据
     cf, errOpen := os.Open(`config.json`)
     if errOpen != nil {
-        fmt.Println("Open config file error:", errOpen)
+        fmt.Println("Open config file custerr:", errOpen)
     }
     //关闭配置文件
     defer func(){

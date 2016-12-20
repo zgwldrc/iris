@@ -1,4 +1,4 @@
-package error
+package custerr
 
 const (
 	ERR_USER_BROKEN_INPUT = 4001

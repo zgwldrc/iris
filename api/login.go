@@ -4,7 +4,7 @@ package api
 import (
     "gopkg.in/kataras/iris.v4"
     "iris/models"
-    "iris/error"
+    "iris/custerr"
     "fmt"
 )
 
@@ -20,7 +20,7 @@ func login(ctx *iris.Context) {
 
     if err := ctx.ReadJSON(&inputUser); err != nil {
         ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-            ErrorCode: error.ERR_USER_BROKEN_INPUT,
+            ErrorCode: custerr.ERR_USER_BROKEN_INPUT,
             Message: "Input can not be recognised",
         })
         return
@@ -36,7 +36,7 @@ func login(ctx *iris.Context) {
     //用户不存在
     if checkResult.NotExist {
         ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-            ErrorCode: error.ERR_USER_NOT_EXISTS,
+            ErrorCode: custerr.ERR_USER_NOT_EXISTS,
             Message: "User not exists",
         })
         return
@@ -44,7 +44,7 @@ func login(ctx *iris.Context) {
     //密码无效
     if checkResult.PasswordInvalid {
         ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-            ErrorCode: error.ERR_USER_PASSWD_INVALID,
+            ErrorCode: custerr.ERR_USER_PASSWD_INVALID,
             Message:"Password Invalid",
         })
         return

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"gopkg.in/kataras/iris.v4"
 	"iris/models"
-	"iris/error"
+	"iris/custerr"
 )
 
 func init() {
@@ -32,7 +32,7 @@ func createUser(ctx *iris.Context) {
 	if err := ctx.ReadJSON(&inputUser); err != nil {
 		iris.Logger.Println(err)
 		ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-			ErrorCode: error.ERR_USER_BROKEN_INPUT,
+			ErrorCode: custerr.ERR_USER_BROKEN_INPUT,
 			Message:fmt.Sprint(err),
 		})
 		return
@@ -43,7 +43,7 @@ func createUser(ctx *iris.Context) {
 	//用户输入不完整
 	if checkResult.InputIsBroken {
 		ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-			ErrorCode: error.ERR_USER_BROKEN_INPUT,
+			ErrorCode: custerr.ERR_USER_BROKEN_INPUT,
 			Message:"输入不完整",
 		})
 		return
@@ -51,7 +51,7 @@ func createUser(ctx *iris.Context) {
 	//用户已存在
 	if !checkResult.NotExist {
 		ctx.JSON(iris.StatusBadRequest, models.JSONResponse{
-			ErrorCode: error.ERR_USER_ALREADY_EXISTS,
+			ErrorCode: custerr.ERR_USER_ALREADY_EXISTS,
 			Message:"用户已存在",
 		})
 		return
@@ -67,7 +67,7 @@ func createUser(ctx *iris.Context) {
 		return
 	} else {
 		ctx.JSON(iris.StatusInternalServerError, models.JSONResponse{
-			ErrorCode: error.ERR_USER_CREATE_FAILED,
+			ErrorCode: custerr.ERR_USER_CREATE_FAILED,
 			Message:"Sorry ,Request has not been handled.",
 		})
 		return
