@@ -8,15 +8,15 @@ import (
 type Account struct {
     Model
 
-    UserID int               `json:"-" gorm:"unique_index:uix_user_id_account_account_type_id_endpoint_id"`
+    UserID int               `json:"user_id,omitempty" gorm:"unique_index:uix_user_id_account_account_type_id_endpoint_id"`
     Account string           `json:"account" gorm:"unique_index:uix_user_id_account_account_type_id_endpoint_id;not null"`
     Password string          `json:"password" gorm:"not null"`
 
 	AccountType AccountType  `json:"account_type"`
-    AccountTypeID int        `json:"account_type_id" gorm:"unique_index:uix_user_id_account_account_type_id_endpoint_id"`
+    AccountTypeID int        `json:"account_type_id,omitempty" gorm:"unique_index:uix_user_id_account_account_type_id_endpoint_id"`
 
     Endpoint Endpoint        `json:"endpoint"`
-    EndpointID int           `json:"endpoint_id" gorm:"unique_index:uix_user_id_account_account_type_id_endpoint_id"`
+    EndpointID int           `json:"endpoint_id,omitempty" gorm:"unique_index:uix_user_id_account_account_type_id_endpoint_id"`
 
     DescInfo string          `json:"desc_info" gorm:"not null"`
 
@@ -30,11 +30,29 @@ type CheckAccountResult struct {
 }
 
 func (a *Account)Load(uid, aid int){
-    mysql.DB.
-        Joins("JOIN account_types ON account_types.id = accounts.account_type_id").
-        Joins("JOIN endpoints ON endpoints.id = accounts.endpoint_id").
-        Where("accounts.user_id = ? AND accounts.id = ?", uid, aid).Find(a)
+    row:= mysql.DB.Raw(`
+    SELECT a.id,a.account,a.password,a.desc_info,at.type,e.url
+    FROM accounts as a
+    INNER JOIN account_types as at ON a.account_type_id = at.id
+    INNER JOIN endpoints     as e  ON a.endpoint_id = e.id
+    WHERE a.user_id = ? AND a.id = ?
+    `,uid,aid).Row()
+
+    err := row.Scan(
+        &a.ID,
+        &a.Account,
+        &a.Password,
+        &a.DescInfo,
+        &a.AccountType.Type,
+        &a.Endpoint.URL,
+    )
+    if err != nil {
+        iris.Logger.Println(err)
+    }
 }
+
+func (a *Account)GetList(uid int, orderby string,limit int )
+
 func (a *Account)Create() {
     r := a.Check()
     switch  {
