@@ -35,7 +35,8 @@ func (a *Account)Load(uid, aid int){
     FROM accounts as a
     INNER JOIN account_types as at ON a.account_type_id = at.id
     INNER JOIN endpoints     as e  ON a.endpoint_id = e.id
-    WHERE a.user_id = ? AND a.id = ?
+    WHERE a.user_id = ?
+    AND   a.id = ?
     `,uid,aid).Row()
 
     err := row.Scan(
@@ -51,7 +52,39 @@ func (a *Account)Load(uid, aid int){
     }
 }
 
-func (a *Account)GetList(uid int, orderby string,limit int )
+func (a *Account)GetListByUserId(uID int, orderBy string) (accountList []Account) {
+
+    rows, err := mysql.DB.Raw(`
+    SELECT a.id,a.account,a.password,a.desc_info,at.type,e.url
+    FROM accounts as a
+    INNER JOIN account_types as at ON a.account_type_id = at.id
+    INNER JOIN endpoints     as e  ON a.endpoint_id = e.id
+    WHERE a.user_id = ?
+    ORDER BY ?
+    `, uID, orderBy).Rows()
+    if err != nil {
+       iris.Logger.Println(err)
+        return nil
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        err := rows.Scan(
+        &a.ID,
+        &a.Account,
+        &a.Password,
+        &a.DescInfo,
+        &a.AccountType.Type,
+        &a.Endpoint.URL,
+        )
+        if err != nil {
+            iris.Logger.Println(err)
+            break
+        }
+        accountList = append(accountList,*a)
+    }
+    return accountList
+}
 
 func (a *Account)Create() {
     r := a.Check()

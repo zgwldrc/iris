@@ -2,6 +2,7 @@ package config
 
 import (
     "gopkg.in/kataras/iris.v4"
+    irisJSON  "gopkg.in/kataras/go-serializer.v0/json"
     "os"
     "encoding/json"
     "fmt"
@@ -37,6 +38,11 @@ func init() {
     if  env == "" {
         env = "DEV"
     }
+
+    if env != "PRO" {
+        iris.UseSerializer(irisJSON.ContentType, irisJSON.New(irisJSON.Config{Indent: true}))
+    }
+
     configMap[env].Set(iris.Config)
     fmt.Printf("########当前使用配置%s#########\n",env)
     fmt.Println("iris.Config.Gzip:",iris.Config.Gzip)

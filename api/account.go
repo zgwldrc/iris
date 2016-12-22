@@ -6,7 +6,6 @@ import (
 	"iris/models"
 	"fmt"
 	"iris/custerr"
-	"iris/services/mysql"
 )
 
 func init() {
@@ -39,8 +38,9 @@ func getAccount(ctx *iris.Context){
 }
 
 func getAccountList(ctx *iris.Context){
+	var a models.Account
 	var AccountList  []models.Account
-	id, err := ctx.Session().GetInt("id")
+	uID, err := ctx.Session().GetInt("id")
 	if err != nil {
 		ctx.JSON(iris.StatusForbidden,models.JSONResponse{
 			Message: fmt.Sprint(err),
@@ -48,7 +48,7 @@ func getAccountList(ctx *iris.Context){
 		return
 	}
 
-	mysql.DB.Where("user_id = ?",id).Find(&AccountList)
+	AccountList = a.GetListByUserId(uID,"created_at")
 	ctx.JSON(iris.StatusOK, models.JSONResponse{
 		Data: AccountList,
 	})
